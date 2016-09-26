@@ -10,6 +10,7 @@ block content
   link(rel='stylesheet', href='css/extensions.css?v=2')
   link(rel='stylesheet', href='http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css')
   link(rel='stylesheet', href='css/jquery.datetimepicker.css')
+  link(rel='stylesheet', href='/Build/Cesium/Widgets/widgets.css')
 
   script(type='text/javascript', src='js/d3/d3.v3.js')
   script(type='text/javascript', src='js/rickshaw/rickshaw.min.js')
@@ -17,6 +18,7 @@ block content
   script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js')
   script(type='text/javascript', src='js/jquery.datetimepicker.min.js')
   script(type='text/javascript',src='js/rickshaw/extensions.js')
+  script(type='text/javascript', src='/Build/Cesium/Cesium.js')
   
   script
     |$(function() {
@@ -120,7 +122,8 @@ block content
       img.iotimages(src='images/quickstartChart.svg', alt='Chart',align="middle")
     #timeline
     #preview
-  
+  #cesium_container
+    script(type='text/javascript', src='js/localCesium.js')
   script(type='text/javascript', src='js/realtime/mqttws31.js')
   script(type='text/javascript', src='js/realtime/realtime.js')
   script(type='text/javascript', src='js/realtime/realtimeGraph.js')

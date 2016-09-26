@@ -7,6 +7,12 @@
 	display: inline-block;
 	margin-left: 40px;
 }
+#cesium_container{
+	postion: relative;
+	display: inline-block;
+	width: 500px;
+	height:500px;
+}
 #historian {
 	margin-left: 40px;
 	margin-bottom: 20px;

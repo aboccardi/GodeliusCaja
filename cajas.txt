@@ -1,0 +1,20 @@
+IoT Bluemix API key
+
+"apiKey": "a-3fqu3g-fofvmdoh4j",
+        "apiToken": "NMHq3qlml+bzWU*z+7"
+
+
+
+Cajas
+
+
+Organization ID
+3fqu3g
+Device Type
+Caja
+Device ID
+1
+Authentication Method
+token
+Authentication Token
+jQzv7i(RMwGc(1j&QB
