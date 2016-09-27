@@ -42,8 +42,8 @@ app.use(cookieParser());
 app.use(session({secret: 'iotfCloud123456789',saveUninitialized: true,
                  resave: true}));
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'Build')));
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 app.use('/',index);
 
