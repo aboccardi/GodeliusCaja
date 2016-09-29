@@ -20,6 +20,8 @@ var base_path='/api/v0002';
 var historian_path =  base_path + pathSeperator + 'historian';
 var types_path = "types";
 var devices_path = "devices";
+var device_path = "device";
+var location_path = "location";
 
 //Org APIs
 // api to get info of a org
@@ -46,6 +48,21 @@ router.get('/organization/getdevices', function(req, res) {
   
 });
 
+// api to get a device location
+router.get('/device/types/:deviceType/devices/:deviceId/location', function(req, res) {
+  
+  var orgId = req.session.api_key.split('-')[1];
+  var deviceType = req.params.deviceType;
+  var deviceId= req.params.deviceId;
+
+  console.log("Fetching the location for orgId "+orgId+" for device : "+deviceId);
+    
+  var uri=  base_path + pathSeperator + device_path + pathSeperator + types_path + pathSeperator + deviceType +pathSeperator + devices_path + pathSeperator + deviceId;
+
+  util.orgId = orgId;
+  util.iot_httpCall(uri, req.session.api_key, req.session.auth_token, res, req.query);
+  
+});
 //Historian APIs
 
 //get historical data of a org

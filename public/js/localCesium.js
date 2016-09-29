@@ -27,25 +27,3 @@ var points = [];
 var handlerTwo;
 
 
-handlerTwo = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-handlerTwo.setInputAction(function(click) {
-	var pickRay = viewer.camera.getPickRay(click.position);
-	var pickedPosition = viewer.scene.globe.pick(pickRay, viewer.scene);
-
-	if (pickedPosition) {
-		points.push(viewer.entities.add({
-			position : pickedPosition ,
-			point : {
-				color : Cesium.Color.SKYBLUE,
-				pixelSize : 10,
-				outlineColor : Cesium.Color.YELLOW,
-				outlineWidth : 1,
-				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND
-			}
-		}));
-		
-		console.log("punto: " + points[points.length - 1].position.getValue(Cesium.JulianDate.now()));
-	} else {
-		entity.label.show = false;
-	}
-}, Cesium.ScreenSpaceEventType.LEFT_CLICK);

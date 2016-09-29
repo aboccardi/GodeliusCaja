@@ -59,6 +59,40 @@ $.ajax
 		for(var d in devices){
 			$("#deviceslist").append("<option value="+devices[d].clientId+">"+devices[d].deviceId+"</option>");
 			console.log(devices[d]);
+			$.ajax
+			({
+				type: "GET",
+				url: "/api/v0002/device/types/" + devices[d].typeId + "/devices/" + devices[d].deviceId + "/location",
+				dataType: 'json',
+				async: true,
+				
+				success: function (data, status, jq) {
+					console.log("location x: " + data.metadata.x);
+					console.log("location y: " + data.metadata.y);
+					console.log("location z: " + data.metadata.z);
+					var x = data.metadata.x;
+					var y = data.metadata.y;
+					var z = data.metadata.z;
+					
+					var pointPosition = Cesium.Cartesian3.fromElements(x,y,z);
+					viewer.entities.add({
+						position: pointPosition,
+						point : {
+							color : Cesium.Color.SKYBLUE,
+							pixelSize : 10,
+							outlineColor : Cesium.Color.YELLOW,
+							outlineWidth : 1,
+							heightReference : Cesium.HeightReference.CLAMP_TO_GROUND
+						}
+					});
+				},
+				error: function (xhr, ajaxOptions, thrownError) {
+					console.log(xhr.status);
+					console.log(thrownError);
+				}
+				
+			});
+
 		}
 	},
 	error: function (xhr, ajaxOptions, thrownError) {
@@ -67,6 +101,8 @@ $.ajax
 	}
 });
 
+	
+	
 var realtime = new Realtime(orgId, api_key, auth_token);
 
 var historian = new Historian();
