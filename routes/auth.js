@@ -15,12 +15,12 @@ var router = express.Router();
 
 // Login page
 router.get('/login', function(req, res) {
-  res.render('login', { title: 'IBM Internet of Things Foundation' });
+  res.render('login', { title: 'Demo monitoreo Cajas' });
 });
 
 //login page after a login failure
 router.get('/loginfail', function(req, res) {
-  res.render('loginfail', { title: 'IBM Internet of Things Foundation' });
+  res.render('loginfail', { title: 'Demo monitoreo Cajas' });
 });
 
 router.post('/login', function(req, res) {

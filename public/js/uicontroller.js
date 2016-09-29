@@ -58,6 +58,7 @@ $.ajax
 		devices = data;
 		for(var d in devices){
 			$("#deviceslist").append("<option value="+devices[d].clientId+">"+devices[d].deviceId+"</option>");
+			console.log(devices[d]);
 		}
 	},
 	error: function (xhr, ajaxOptions, thrownError) {
