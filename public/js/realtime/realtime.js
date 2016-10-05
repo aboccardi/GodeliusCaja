@@ -30,7 +30,8 @@ var Realtime = function(orgId, api_key, auth_token) {
 		var rtGraph = new RealtimeGraph();
 		client.onMessageArrived = function(msg) {
 			var topic = msg.destinationName;
-			
+			var tokensCaja = topic.split('/');
+			var idCaja = tokensCaja[2]+tokensCaja[4];
 			var payload = JSON.parse(msg.payloadString);
 			//First message, instantiate the graph  
 		    if (firstMessage) {
@@ -39,6 +40,19 @@ var Realtime = function(orgId, api_key, auth_token) {
 		    	rtGraph.displayChart(null,payload);
 		    } else {
 		    	rtGraph.graphData(payload);
+				
+				viewer.entities.getById(idCaja).description =  '\
+						<p>\
+						  Fecha perf.: 20/09/2016 14:56 <br> \
+						  Mezcla tipo: ...<br> \
+						  Fecha llenado: 21/09/2016 08:45 <br> \
+						  Temp de la caja: '+ payload.d.temp0 +' <br>\
+						  Temp taco: '+ payload.d.temp1 +'<br>\
+						  Temp 5m profundidad: '+ payload.d.temp2 +'<br>\
+						  Temp 10m profundidad: '+ payload.d.temp3 +'<br>\
+						  Temp 15m profundidad: '+ payload.d.temp4 +'<br>\
+						  % Carga Baterias: '+ payload.d.batt +'<br>\
+						</p>';
 		    }
 		};
 

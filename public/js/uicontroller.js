@@ -73,9 +73,10 @@ $.ajax
 					var x = data.metadata.x;
 					var y = data.metadata.y;
 					var z = data.metadata.z;
-					
+					entityId = "Caja" + data.deviceId;
 					var pointPosition = Cesium.Cartesian3.fromElements(x,y,z);
 					viewer.entities.add({
+						id: entityId,
 						position: pointPosition,
 						point : {
 							color : Cesium.Color.SKYBLUE,
@@ -85,6 +86,19 @@ $.ajax
 							heightReference : Cesium.HeightReference.CLAMP_TO_GROUND
 						}
 					});
+					
+					viewer.entities.getById(entityId).description =  '\
+						<p>\
+						  Fecha perf.: 20/09/2016 14:56 <br> \
+						  Mezcla tipo: ...<br> \
+						  Fecha llenado: 21/09/2016 08:45 <br> \
+						  Temp de la caja: <br>\
+						  Temp taco: <br>\
+						  Temp 5m profundidad: <br>\
+						  Temp 10m profundidad: <br>\
+						  Temp 15m profundidad: <br>\
+						  % Carga Baterias: <br>\
+						</p>';
 				},
 				error: function (xhr, ajaxOptions, thrownError) {
 					console.log(xhr.status);
