@@ -73,10 +73,11 @@ $.ajax
 					var x = data.metadata.x;
 					var y = data.metadata.y;
 					var z = data.metadata.z;
-					entityId = "Caja" + data.deviceId;
+					entityId = data.deviceId;
 					var pointPosition = Cesium.Cartesian3.fromElements(x,y,z);
 					viewer.entities.add({
 						id: entityId,
+						name: "Caja " + entityId,
 						position: pointPosition,
 						point : {
 							color : Cesium.Color.SKYBLUE,
@@ -121,7 +122,8 @@ var realtime = new Realtime(orgId, api_key, auth_token);
 
 var historian = new Historian();
 $( "#deviceslist" ).change(function() {
-
+	var idCaja = $("#deviceslist option:selected").text();
+	viewer.selectedEntity = viewer.entities.getById(idCaja);
 	if(isHistorian){
 		historian.plotHistoricGraph();
 	} else {

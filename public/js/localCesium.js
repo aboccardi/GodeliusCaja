@@ -23,7 +23,14 @@ viewer.camera.flyTo({
 });
 
 var scene = viewer.scene;
-var points = [];
+//var points = [];
 var handlerTwo;
 
-
+handlerTwo = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+handlerTwo.setInputAction(function(movement) {
+    if (viewer.selectedEntity) {
+        var valor = "d:3fqu3g:Caja:" + viewer.selectedEntity.id;
+		$("#deviceslist").val(valor);
+		$("#deviceslist").trigger('change');
+    }
+}, Cesium.ScreenSpaceEventType.LEFT_CLICK);

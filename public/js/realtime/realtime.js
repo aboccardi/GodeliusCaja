@@ -31,7 +31,7 @@ var Realtime = function(orgId, api_key, auth_token) {
 		client.onMessageArrived = function(msg) {
 			var topic = msg.destinationName;
 			var tokensCaja = topic.split('/');
-			var idCaja = tokensCaja[2]+tokensCaja[4];
+			var idCaja = tokensCaja[4];
 			var payload = JSON.parse(msg.payloadString);
 			//First message, instantiate the graph  
 		    if (firstMessage) {
