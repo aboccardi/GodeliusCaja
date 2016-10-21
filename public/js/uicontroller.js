@@ -98,10 +98,6 @@ $.ajax
 						  Temp 5m prof. (ºC): <br>\
 						  Temp 10m prof. (ºC): <br>\
 						  Temp 15m prof. (ºC): <br>\
-						  Batt0 (V): <br>\
-						  Batt1 (V): <br>\
-						  Batt2 (V): <br>\
-						  Batt3 (V): <br>\
 						</p>';
 				},
 				error: function (xhr, ajaxOptions, thrownError) {
