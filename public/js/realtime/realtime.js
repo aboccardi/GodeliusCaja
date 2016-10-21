@@ -46,12 +46,15 @@ var Realtime = function(orgId, api_key, auth_token) {
 						  Fecha perf.: 20/09/2016 14:56 <br> \
 						  Mezcla tipo: ...<br> \
 						  Fecha llenado: 21/09/2016 08:45 <br> \
-						  Temp de la caja: '+ payload.d.temp0 +' <br>\
-						  Temp taco: '+ payload.d.temp1 +'<br>\
-						  Temp 5m profundidad: '+ payload.d.temp2 +'<br>\
-						  Temp 10m profundidad: '+ payload.d.temp3 +'<br>\
-						  Temp 15m profundidad: '+ payload.d.temp4 +'<br>\
-						  % Carga Baterias: '+ payload.d.batt +'<br>\
+						  Temp de la caja (ºC): '+ payload.d.temp0 +' <br>\
+						  Temp taco (ºC): '+ payload.d.temp1 +'<br>\
+						  Temp 5m prof. (ºC): '+ payload.d.temp2 +'<br>\
+						  Temp 10m prof. (ºC): '+ payload.d.temp3 +'<br>\
+						  Temp 15m prof. (ºC): '+ payload.d.temp4 +'<br>\
+						  Batt0 (V): '+ payload.d.batt0 +'<br>\
+						  Batt1 (V): '+ payload.d.batt1 +'<br>\
+						  Batt2 (V): '+ payload.d.batt2 +'<br>\
+						  Batt3 (V): '+ payload.d.batt3 +'<br>\
 						</p>';
 		    }
 		};
