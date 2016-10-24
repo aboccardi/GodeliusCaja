@@ -33,7 +33,8 @@ var RealtimeGraph = function(){
 			renderer: 'line',
 			stroke: true,
 			preserve: true,
-			series: seriesData	
+			series: seriesData,
+			min: 'auto'
 		} );
 
 		this.graph.render();
