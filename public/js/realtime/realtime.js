@@ -37,7 +37,7 @@ var Realtime = function(orgId, api_key, auth_token) {
 		    if (firstMessage) {
 		    	$('#chart').empty();
 		    	firstMessage=false;
-		    	rtGraph.displayChart(null,payload);
+		    	rtGraph.displayChart(idCaja,payload);
 		    } else {
 		    	rtGraph.graphData(payload);
 				

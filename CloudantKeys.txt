@@ -1,0 +1,21 @@
+{
+  "username": "e4859add-8f92-475c-b3bf-cb69a9c4aa8e-bluemix",
+  "password": "580fc762b6d565141749df0b49d855f8e0acd3da0db6740c141c3474ccd0f25a",
+  "host": "e4859add-8f92-475c-b3bf-cb69a9c4aa8e-bluemix.cloudant.com",
+  "port": 443,
+  "url": "https://e4859add-8f92-475c-b3bf-cb69a9c4aa8e-bluemix:580fc762b6d565141749df0b49d855f8e0acd3da0db6740c141c3474ccd0f25a@e4859add-8f92-475c-b3bf-cb69a9c4aa8e-bluemix.cloudant.com"
+}
+
+Cloudant API key for iotp_znuylb_default_2016_11
+
+Key:weeddarcheinellyinevenat
+d5ed32c0d306e48eb086ba67e8cda0dcd3fd7b95
+
+
+{
+  "username": "5d594679-db64-4ed8-a0d8-1cd09196d918-bluemix",
+  "password": "4bac2881ad82100778fc1b0d7e34f6066a7c718a7d12baf8acf02504d5cf1c87",
+  "host": "5d594679-db64-4ed8-a0d8-1cd09196d918-bluemix.cloudant.com",
+  "port": 443,
+  "url": "https://5d594679-db64-4ed8-a0d8-1cd09196d918-bluemix:4bac2881ad82100778fc1b0d7e34f6066a7c718a7d12baf8acf02504d5cf1c87@5d594679-db64-4ed8-a0d8-1cd09196d918-bluemix.cloudant.com"
+}

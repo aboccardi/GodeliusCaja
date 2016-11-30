@@ -32,7 +32,8 @@ var HistorianGraph = function(){
 			renderer: 'line',
 			stroke: true,
 			preserve: true,
-			series: seriesData	
+			series: seriesData,
+			min: 'auto'
 		} );
 
 		this.graph.render();
@@ -107,15 +108,15 @@ var HistorianGraph = function(){
 
 		var counter = 0;
 
-		var data = histData.events;
+		var data = histData.rows;
 		
 		for(var i = data.length-1 ; i>=0 ;i-- ){	
 	   		
 	   		var key = 0;	
 			
-			for (var j in data[i].evt) {
+			for (var j in data[i].value.data.d) {
 
-				if (typeof data[i].evt[j] === 'number') {
+				if (typeof data[i].value.data.d[j] === 'number') {
 					if(i===data.length-1){
 						seriesData[key]={};
 						seriesData[key].name=j;
@@ -124,13 +125,13 @@ var HistorianGraph = function(){
 					}
 					
 					seriesData[key].data[counter]={};
-					seriesData[key].data[counter].x = data[i].timestamp.$date/1000;// timestamp;
-					seriesData[key].data[counter].y = data[i].evt[j];
+					seriesData[key].data[counter].x = Date.parse(data[i].value.timestamp)/1000;// timestamp;
+					seriesData[key].data[counter].y = data[i].value.data.d[j];
 				
 					key++;
-				} else if (typeof data[i].evt[j] == 'string') {
-					if(!isNaN(data[i].evt[j])) {
-						var value = parseFloat(data[i].evt[j]);
+				} else if (typeof data[i].value.data.d[j] == 'string') {
+					if(!isNaN(data[i].value.data.d[j])) {
+						var value = parseFloat(data[i].value.data.d[j]);
 						if(i===data.length-1){
 							seriesData[key]={};
 							seriesData[key].name=j;
@@ -139,7 +140,7 @@ var HistorianGraph = function(){
 						}
 						
 						seriesData[key].data[counter]={};
-						seriesData[key].data[counter].x = data[i].timestamp.$date/1000;// timestamp;
+						seriesData[key].data[counter].x = Date.parse(data[i].value.timestamp)/1000;// timestamp;
 						seriesData[key].data[counter].y = value;
 					
 						key++;

@@ -1,7 +1,7 @@
 applications:
 - disk_quota: 1024M
-  host: GodeliusIoTView
-  name: GodeliusIoTView
+  host: GodeliusCaja
+  name: GodeliusCaja
   command: node app.js
   path: .
   domain: mybluemix.net
