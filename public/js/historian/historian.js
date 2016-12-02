@@ -27,9 +27,9 @@ var Historian  = function () {
 			var top = $( 'input[name=historicQuery]:checked' ).val();
 			console.log("called "+top);
 			var queryParam = {};
-			var dbhost = "5d594679-db64-4ed8-a0d8-1cd09196d918-bluemix.cloudant.com"
-			var dbid = "/iotp_znuylb_default_"
-			var apicmd = "/_design/iotp/_view/by-deviceId-and-date"
+			var dbhost = "5d594679-db64-4ed8-a0d8-1cd09196d918-bluemix.cloudant.com";
+			var dbid = "/iotp_znuylb_default_";
+			var apicmd = "/_design/iotp/_view/by-deviceId-and-date";
 			var user = "5d594679-db64-4ed8-a0d8-1cd09196d918-bluemix";
 			var pass = "4bac2881ad82100778fc1b0d7e34f6066a7c718a7d12baf8acf02504d5cf1c87";
 			

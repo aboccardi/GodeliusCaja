@@ -37,7 +37,40 @@ var Realtime = function(orgId, api_key, auth_token) {
 		    if (firstMessage) {
 		    	$('#chart').empty();
 		    	firstMessage=false;
-		    	rtGraph.displayChart(idCaja,payload);
+				var dbhost = "5d594679-db64-4ed8-a0d8-1cd09196d918-bluemix.cloudant.com";
+				var dbid = "/iotp_znuylb_default_";
+				var apicmd = "/_design/iotp/_view/by-deviceId-and-date";
+				var user = "5d594679-db64-4ed8-a0d8-1cd09196d918-bluemix";
+				var pass = "4bac2881ad82100778fc1b0d7e34f6066a7c718a7d12baf8acf02504d5cf1c87";
+				var d = new Date();
+				dbid = dbid + d.getFullYear() + "-" + (d.getMonth()+1);
+				var limite = 200;
+				var skey = '["'+idCaja+'",{}]';
+				var ekey = '["'+idCaja+'"]';
+				var desc = true;
+				jQuery.ajax
+				({
+					type: "GET",
+					url: "https://" + dbhost + dbid + apicmd,
+					data: {
+						startkey: skey,
+						endkey: ekey,
+						descending:desc,
+						limit: limite
+					},
+					beforeSend: function (xhr) {
+						xhr.setRequestHeader ("Authorization", "Basic " + btoa(user + ":" + pass));
+					},
+					async: true,
+
+					success: function (data, status, jq){
+						rtGraph.displayChart(idCaja, data);
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						console.log(xhr.status);
+						console.log(thrownError);
+					}
+				});
 		    } else {
 		    	rtGraph.graphData(payload);
 				

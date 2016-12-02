@@ -135,80 +135,55 @@ var RealtimeGraph = function(){
 		this.graph.render();	
 	}
 
-	this.displayChart = function(device,data){
+	this.displayChart = function(device, histData){
 
-		var key = 0;
 		var seriesData = [];
 //		var timestamp = Date.now()/1000;
-		var timestamp = Date.parse(data.timestamp)/1000;
-		var me = '5d594679-db64-4ed8-a0d8-1cd09196d918-bluemix';
-		var password = '4bac2881ad82100778fc1b0d7e34f6066a7c718a7d12baf8acf02504d5cf1c87';
-/*
-		var cloudant = Cloudant({account:me, password:password});
+//		var lasttimestamp = Date.parse(data.timestamp)/1000;
 
-		var db = cloudant.db.use('iotp_znuylb_default_2016-11');
+		var counter = 0;
+		var hist = histData.rows;
+		
+		for(var i = hist.length-1 ; i>=0 ;i-- ){	
+	   		
+	   		var key = 0;	
+			
+			for (var j in hist[i].value.data.d) {
 
-		db.view('iotp','by-deviceId-and-date', {startkey: [device,{}], endkey:[device], descending:true, 'limit':199}, function (err, body) {
-			body.rows.forEach(function(doc){
-				timestamp = Date.parse(doc.value.timestamp)/1000;
-				for (var j in doc.value.data.d)
-				{
-					if (typeof doc.value.data.d[j] === 'number') {
+				if (typeof hist[i].value.data.d[j] === 'number') {
+					if(i===hist.length-1){
 						seriesData[key]={};
 						seriesData[key].name=j;
 						seriesData[key].color = palette.color();
-						seriesData[key].data=[];
-
-						seriesData[key].data[0]={};
-						seriesData[key].data[0].x = timestamp;
-						seriesData[key].data[0].y = data.d[j];
-						key++;
-					} else if (typeof data.d[j] === 'string') {
-						if(!isNaN(data.d[j])) {
-							var value = parseFloat(data.d[j]);
+						seriesData[key].data=[];	
+					}
+					
+					seriesData[key].data[counter]={};
+					seriesData[key].data[counter].x = Date.parse(hist[i].value.timestamp)/1000;// timestamp;
+					seriesData[key].data[counter].y = hist[i].value.data.d[j];
+				
+					key++;
+				} else if (typeof hist[i].value.data.d[j] == 'string') {
+					if(!isNaN(hist[i].value.data.d[j])) {
+						var value = parseFloat(hist[i].value.data.d[j]);
+						if(i===hist.length-1){
 							seriesData[key]={};
 							seriesData[key].name=j;
 							seriesData[key].color = palette.color();
-							seriesData[key].data=[];
-
-							seriesData[key].data[0]={};
-							seriesData[key].data[0].x = timestamp;
-							seriesData[key].data[0].y = value;
-							key++;
+							seriesData[key].data=[];	
 						}
+						
+						seriesData[key].data[counter]={};
+						seriesData[key].data[counter].x = Date.parse(hist[i].value.timestamp)/1000;// timestamp;
+						seriesData[key].data[counter].y = value;
+					
+						key++;
 					}
-				}	
-			});
-		});
-*/
-		
-		for (var j in data.d)
-		{
-			if (typeof data.d[j] === 'number') {
-				seriesData[key]={};
-				seriesData[key].name=j;
-				seriesData[key].color = palette.color();
-				seriesData[key].data=[];
-
-				seriesData[key].data[0]={};
-				seriesData[key].data[0].x = timestamp;
-				seriesData[key].data[0].y = data.d[j];
-				key++;
-			} else if (typeof data.d[j] === 'string') {
-				if(!isNaN(data.d[j])) {
-					var value = parseFloat(data.d[j]);
-					seriesData[key]={};
-					seriesData[key].name=j;
-					seriesData[key].color = palette.color();
-					seriesData[key].data=[];
-
-					seriesData[key].data[0]={};
-					seriesData[key].data[0].x = timestamp;
-					seriesData[key].data[0].y = value;
-					key++;
 				}
 			}
-		}
+			
+			counter++;
+		}	
 		this.drawGraph(seriesData);
 	}
 };

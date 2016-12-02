@@ -108,6 +108,9 @@ $.ajax
 			});
 
 		}
+		$("#deviceslist").html($("#deviceslist option").sort(function (a,b) {
+			return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
+		}));
 	},
 	error: function (xhr, ajaxOptions, thrownError) {
 		console.log(xhr.status);
