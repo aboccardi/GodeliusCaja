@@ -35,7 +35,7 @@ var Historian  = function () {
 			
 			if(top == "topEvents") {
 				var d = new Date();
-				dbid = dbid + d.getFullYear() + "-" + (d.getMonth()+1);
+				dbid = dbid + d.getFullYear() + "-" + String("00" + (d.getMonth()+1)).slice(-2);
 				var limite = $(historicTopRange).spinner( "value" );
 				var skey = '["'+tokens[3]+'",{}]';
 				var ekey = '["'+tokens[3]+'"]';

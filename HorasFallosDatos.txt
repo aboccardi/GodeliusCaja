@@ -1,0 +1,24 @@
+Device 2 gap sin datos:
+
+1/12 19:56:42
+5/12 10:12:14
+
+Device 3 datos "raros"
+2/12 7:10:17
+2/12 18:24:13
+sin datos hasta:
+5/12 10:12:14
+
+Device 4 datos raros
+2/12 7:10:17
+2/12 18:24:53
+sin datos hasta:
+5/12 10:12:14
+
+Device 5 sin datos entre:
+1/12 19:56:42
+5/12 10:12:14
+
+device 1:
+1/12 20:44:06
+5/12 11:16:17
