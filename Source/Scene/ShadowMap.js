@@ -11,29 +11,26 @@ define([
         '../Core/Color',
         '../Core/ColorGeometryInstanceAttribute',
         '../Core/combine',
-        '../Core/ComponentDatatype',
         '../Core/defaultValue',
         '../Core/defined',
         '../Core/defineProperties',
         '../Core/destroyObject',
         '../Core/DeveloperError',
         '../Core/FeatureDetection',
-        '../Core/Geometry',
-        '../Core/GeometryAttribute',
-        '../Core/GeometryAttributes',
         '../Core/GeometryInstance',
         '../Core/Intersect',
         '../Core/Math',
         '../Core/Matrix4',
         '../Core/PixelFormat',
-        '../Core/PrimitiveType',
         '../Core/Quaternion',
         '../Core/SphereOutlineGeometry',
+        '../Core/WebGLConstants',
         '../Renderer/ClearCommand',
         '../Renderer/ContextLimits',
         '../Renderer/CubeMap',
         '../Renderer/DrawCommand',
         '../Renderer/Framebuffer',
+        '../Renderer/Pass',
         '../Renderer/PassState',
         '../Renderer/PixelDatatype',
         '../Renderer/Renderbuffer',
@@ -41,17 +38,15 @@ define([
         '../Renderer/RenderState',
         '../Renderer/Sampler',
         '../Renderer/ShaderProgram',
-        '../Renderer/ShaderSource',
         '../Renderer/Texture',
         '../Renderer/TextureMagnificationFilter',
         '../Renderer/TextureMinificationFilter',
         '../Renderer/TextureWrap',
-        '../Renderer/WebGLConstants',
         './Camera',
         './CullFace',
         './CullingVolume',
+        './DebugCameraPrimitive',
         './OrthographicFrustum',
-        './Pass',
         './PerInstanceColorAppearance',
         './PerspectiveFrustum',
         './Primitive',
@@ -68,29 +63,26 @@ define([
         Color,
         ColorGeometryInstanceAttribute,
         combine,
-        ComponentDatatype,
         defaultValue,
         defined,
         defineProperties,
         destroyObject,
         DeveloperError,
         FeatureDetection,
-        Geometry,
-        GeometryAttribute,
-        GeometryAttributes,
         GeometryInstance,
         Intersect,
         CesiumMath,
         Matrix4,
         PixelFormat,
-        PrimitiveType,
         Quaternion,
         SphereOutlineGeometry,
+        WebGLConstants,
         ClearCommand,
         ContextLimits,
         CubeMap,
         DrawCommand,
         Framebuffer,
+        Pass,
         PassState,
         PixelDatatype,
         Renderbuffer,
@@ -98,17 +90,15 @@ define([
         RenderState,
         Sampler,
         ShaderProgram,
-        ShaderSource,
         Texture,
         TextureMagnificationFilter,
         TextureMinificationFilter,
         TextureWrap,
-        WebGLConstants,
         Camera,
         CullFace,
         CullingVolume,
+        DebugCameraPrimitive,
         OrthographicFrustum,
-        Pass,
         PerInstanceColorAppearance,
         PerspectiveFrustum,
         Primitive,
@@ -116,16 +106,17 @@ define([
     'use strict';
 
     /**
-     * Creates a shadow map from the provided light camera.
+     * Use {@link Viewer#shadowMap} to get the scene's shadow map originating from the sun. Do not construct this directly.
      *
+     * <p>
      * The normalOffset bias pushes the shadows forward slightly, and may be disabled
      * for applications that require ultra precise shadows.
+     * </p>
      *
      * @alias ShadowMap
-     * @constructor
+     * @internalConstructor
      *
      * @param {Object} options An object containing the following properties:
-     * @param {Context} options.context The context in which to create the shadow map.
      * @param {Camera} options.lightCamera A camera representing the light source.
      * @param {Boolean} [options.enabled=true] Whether the shadow map is enabled.
      * @param {Boolean} [options.isPointLight=false] Whether the light source is a point light. Point light shadows do not use cascades.
@@ -136,6 +127,7 @@ define([
      * @param {Number} [options.size=2048] The width and height, in pixels, of each shadow map.
      * @param {Boolean} [options.softShadows=false] Whether percentage-closer-filtering is enabled for producing softer shadows.
      * @param {Number} [options.darkness=0.3] The shadow darkness.
+     * @param {Boolean} [options.normalOffset=true] Whether a normal bias is applied to shadows.
      *
      * @exception {DeveloperError} Only one or four cascades are supported.
      *
@@ -143,6 +135,7 @@ define([
      */
     function ShadowMap(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+        // options.context is an undocumented option
         var context = options.context;
 
         //>>includeStart('debug', pragmas.debug);
@@ -159,6 +152,7 @@ define([
 
         this._enabled = defaultValue(options.enabled, true);
         this._softShadows = defaultValue(options.softShadows, false);
+        this._normalOffset = defaultValue(options.normalOffset, true);
         this.dirty = true;
 
         /**
@@ -190,9 +184,11 @@ define([
         this._outOfViewPrevious = false;
         this._needsUpdate = true;
 
-        // In IE11 polygon offset is not functional.
+        // In IE11 and Edge polygon offset is not functional.
+        // TODO : Also disabled for instances of Firefox and Chrome running ANGLE that do not support depth textures.
+        // Re-enable once https://github.com/AnalyticalGraphicsInc/cesium/issues/4560 is resolved.
         var polygonOffsetSupported = true;
-        if (FeatureDetection.isInternetExplorer) {
+        if (FeatureDetection.isInternetExplorer() || FeatureDetection.isEdge() || ((FeatureDetection.isChrome() || FeatureDetection.isFirefox()) && FeatureDetection.isWindows() && !context.depthTexture)) {
             polygonOffsetSupported = false;
         }
         this._polygonOffsetSupported = polygonOffsetSupported;
@@ -201,7 +197,7 @@ define([
             polygonOffset : polygonOffsetSupported,
             polygonOffsetFactor : 1.1,
             polygonOffsetUnits : 4.0,
-            normalOffset : true,
+            normalOffset : this._normalOffset,
             normalOffsetScale : 0.5,
             normalShading : true,
             normalShadingSmooth : 0.3,
@@ -212,7 +208,7 @@ define([
             polygonOffset : polygonOffsetSupported,
             polygonOffsetFactor : 1.1,
             polygonOffsetUnits : 4.0,
-            normalOffset : true,
+            normalOffset : this._normalOffset,
             normalOffsetScale : 0.1,
             normalShading : true,
             normalShadingSmooth : 0.05,
@@ -223,7 +219,7 @@ define([
             polygonOffset : false,
             polygonOffsetFactor : 1.1,
             polygonOffsetUnits : 4.0,
-            normalOffset : false,
+            normalOffset : this._normalOffset,
             normalOffsetScale : 0.0,
             normalShading : true,
             normalShadingSmooth : 0.1,
@@ -393,6 +389,26 @@ define([
         },
 
         /**
+         * Determines if a normal bias will be applied to shadows.
+         *
+         * @memberof ShadowMap.prototype
+         * @type {Boolean}
+         * @default true
+         */
+        normalOffset : {
+            get : function() {
+                return this._normalOffset;
+            },
+            set : function(value) {
+                this.dirty = this._normalOffset !== value;
+                this._normalOffset = value;
+                this._terrainBias.normalOffset = value;
+                this._primitiveBias.normalOffset = value;
+                this._pointBias.normalOffset = value;
+            }
+        },
+
+        /**
          * Determines if soft shadows are enabled. Uses pcf filtering which requires more texture reads and may hurt performance.
          *
          * @memberof ShadowMap.prototype
@@ -414,6 +430,7 @@ define([
          *
          * @memberof ShadowMap.prototype
          * @type {Number}
+         * @default 2048
          */
         size : {
             get : function() {
@@ -877,54 +894,6 @@ define([
         });
     }
 
-    function createDebugFrustum(camera, color) {
-        var view = camera.viewMatrix;
-        var projection = camera.frustum.projectionMatrix;
-        var viewProjection = Matrix4.multiply(projection, view, scratchMatrix);
-        var inverseViewProjection = Matrix4.inverse(viewProjection, scratchMatrix);
-
-        var positions = new Float64Array(8 * 3);
-        for (var i = 0; i < 8; ++i) {
-            var corner = Cartesian4.clone(frustumCornersNDC[i], scratchFrustumCorners[i]);
-            Matrix4.multiplyByVector(inverseViewProjection, corner, corner);
-            Cartesian3.divideByScalar(corner, corner.w, corner); // Handle the perspective divide
-            positions[i * 3 + 0] = corner.x;
-            positions[i * 3 + 1] = corner.y;
-            positions[i * 3 + 2] = corner.z;
-        }
-
-        var attributes = new GeometryAttributes();
-        attributes.position = new GeometryAttribute({
-            componentDatatype : ComponentDatatype.DOUBLE,
-            componentsPerAttribute : 3,
-            values : positions
-        });
-
-        var indices = new Uint16Array([0,1,1,2,2,3,3,0,0,4,4,7,7,3,7,6,6,2,2,1,1,5,5,4,5,6]);
-        var geometry = new Geometry({
-            attributes : attributes,
-            indices : indices,
-            primitiveType : PrimitiveType.LINES,
-            boundingSphere : new BoundingSphere.fromVertices(positions)
-        });
-
-        var debugFrustum = new Primitive({
-            geometryInstances : new GeometryInstance({
-                geometry : geometry,
-                attributes : {
-                    color : ColorGeometryInstanceAttribute.fromColor(color)
-                }
-            }),
-            appearance : new PerInstanceColorAppearance({
-                translucent : false,
-                flat : true
-            }),
-            asynchronous : false
-        });
-
-        return debugFrustum;
-    }
-
     var debugOutlineColors = [Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA];
     var scratchScale = new Cartesian3();
 
@@ -939,7 +908,11 @@ define([
             if (enterFreezeFrame) {
                 // Recreate debug camera when entering freeze frame mode
                 shadowMap._debugCameraFrustum = shadowMap._debugCameraFrustum && shadowMap._debugCameraFrustum.destroy();
-                shadowMap._debugCameraFrustum = createDebugFrustum(shadowMap._sceneCamera, Color.CYAN);
+                shadowMap._debugCameraFrustum = new DebugCameraPrimitive({
+                    camera : shadowMap._sceneCamera,
+                    color : Color.CYAN,
+                    updateOnChange : false
+                });
             }
             shadowMap._debugCameraFrustum.update(frameState);
         }
@@ -950,7 +923,11 @@ define([
                 if (enterFreezeFrame) {
                     // Recreate debug frustum when entering freeze frame mode
                     shadowMap._debugLightFrustum = shadowMap._debugLightFrustum && shadowMap._debugLightFrustum.destroy();
-                    shadowMap._debugLightFrustum = createDebugFrustum(shadowMap._shadowMapCamera, Color.YELLOW);
+                    shadowMap._debugLightFrustum = new DebugCameraPrimitive({
+                        camera : shadowMap._shadowMapCamera,
+                        color : Color.YELLOW,
+                        updateOnChange : false
+                    });
                 }
                 shadowMap._debugLightFrustum.update(frameState);
 
@@ -958,7 +935,11 @@ define([
                     if (enterFreezeFrame) {
                         // Recreate debug frustum when entering freeze frame mode
                         shadowMap._debugCascadeFrustums[i] = shadowMap._debugCascadeFrustums[i] && shadowMap._debugCascadeFrustums[i].destroy();
-                        shadowMap._debugCascadeFrustums[i] = createDebugFrustum(shadowMap._passes[i].camera, debugOutlineColors[i]);
+                        shadowMap._debugCascadeFrustums[i] = new DebugCameraPrimitive({
+                            camera : shadowMap._passes[i].camera,
+                            color : debugOutlineColors[i],
+                            updateOnChange : false
+                        });
                     }
                     shadowMap._debugCascadeFrustums[i].update(frameState);
                 }
@@ -977,7 +958,11 @@ define([
             shadowMap._debugLightFrustum.update(frameState);
         } else {
             if (!defined(shadowMap._debugLightFrustum) || shadowMap._needsUpdate) {
-                shadowMap._debugLightFrustum = createDebugFrustum(shadowMap._shadowMapCamera, Color.YELLOW);
+                shadowMap._debugLightFrustum = new DebugCameraPrimitive({
+                    camera : shadowMap._shadowMapCamera,
+                    color : Color.YELLOW,
+                    updateOnChange : false
+                });
             }
             shadowMap._debugLightFrustum.update(frameState);
         }
@@ -989,9 +974,9 @@ define([
         this.frustum = undefined;
         this.positionCartographic = new Cartographic();
         this.positionWC = new Cartesian3();
-        this.directionWC = new Cartesian3();
-        this.upWC = new Cartesian3();
-        this.rightWC = new Cartesian3();
+        this.directionWC = Cartesian3.clone(Cartesian3.UNIT_Z);
+        this.upWC = Cartesian3.clone(Cartesian3.UNIT_Y);
+        this.rightWC = Cartesian3.clone(Cartesian3.UNIT_X);
         this.viewProjectionMatrix = new Matrix4();
     }
 
@@ -1354,8 +1339,9 @@ define([
         var far;
         if (shadowMap._fitNearFar) {
             // shadowFar can be very large, so limit to shadowMap.maximumDistance
+            // Push the far plane slightly further than the near plane to avoid degenerate frustum
             near = Math.min(frameState.shadowHints.nearPlane, shadowMap.maximumDistance);
-            far = Math.min(frameState.shadowHints.farPlane, shadowMap.maximumDistance);
+            far = Math.min(frameState.shadowHints.farPlane, shadowMap.maximumDistance + 1.0);
         } else {
             near = camera.frustum.near;
             far = shadowMap.maximumDistance;
@@ -1506,10 +1492,10 @@ define([
             var isTerrain = command.pass === Pass.GLOBE;
             var isOpaque = command.pass !== Pass.TRANSLUCENT;
             var isPointLight = shadowMap._isPointLight;
-            var useDepthTexture = shadowMap._usesDepthTexture;
+            var usesDepthTexture= shadowMap._usesDepthTexture;
 
             var castVS = ShadowMapShader.createShadowCastVertexShader(vertexShaderSource, isPointLight, isTerrain);
-            var castFS = ShadowMapShader.createShadowCastFragmentShader(fragmentShaderSource, isPointLight, useDepthTexture, isOpaque);
+            var castFS = ShadowMapShader.createShadowCastFragmentShader(fragmentShaderSource, isPointLight, usesDepthTexture, isOpaque);
 
             castShader = ShaderProgram.fromCache({
                 context : context,

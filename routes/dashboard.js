@@ -16,7 +16,7 @@ var router = express.Router();
 /* GET realtime page. */
 router.get('/', function(req, res) {
 
-	res.render('dashboard', { title: 'Demo monitoreo cajas' });
+	res.render('dashboard', { title: 'Plataforma Gestión STM' });
 });
 
 
