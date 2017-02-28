@@ -15,6 +15,7 @@ var subscribeTopic = "";
 var Realtime = function(orgId, api_key, auth_token) {
 
 	var firstMessage = true;
+	var Reconnect = false;
 
 	var clientId="a:"+orgId+":" +Date.now();
 
@@ -90,7 +91,9 @@ var Realtime = function(orgId, api_key, auth_token) {
 
 		client.onConnectionLost = function(e){
 			console.log("Connection Lost at " + Date.now() + " : " + e.errorCode + " : " + e.errorMessage);
+			Reconnect = true;
 			this.connect(connectOptions);
+			
 		}
 
 		var connectOptions = new Object();
@@ -101,6 +104,32 @@ var Realtime = function(orgId, api_key, auth_token) {
 
 		connectOptions.onSuccess = function() {
 			console.log("MQTT connected to host: "+client.host+" port : "+client.port+" at " + Date.now());
+			if (Reconnect) {
+				var subscribeOptions = {
+					qos : 0,
+					onSuccess : function() {
+						console.log("subscribed to " + subscribeTopic);
+						Reconnect = false;
+					},
+					onFailure : function(){
+						console.log("Failed to subscribe to " + subscribeTopic);
+						console.log("As messages are not available, visualization is not possible");
+					}
+				};
+		
+				var item = $("#deviceslist").val();
+				var tokens = item.split(':');
+	//			if(subscribeTopic != "") {
+	//				console.log("Unsubscribing to " + subscribeTopic);
+	//				client.unsubscribe(subscribeTopic);
+	//			}
+
+				firstMessage = false;
+
+				subscribeTopic = "iot-2/type/" + tokens[2] + "/id/" + tokens[3] + "/evt/+/fmt/json";
+				client.subscribe(subscribeTopic,subscribeOptions);
+
+			}
 		}
 
 		connectOptions.onFailure = function(e) {
