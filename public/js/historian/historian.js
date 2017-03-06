@@ -71,7 +71,9 @@ var Historian  = function () {
 				success: function (data, status, jq){
 
 					//clear prev graphs
-					$('#chart').empty(); 
+					$('#chart').empty();
+//					var $newGraph = $('#chart').clone();
+//					$('#chart').replaceWith($newGraph);
 					$('#timeline').empty();
 					$('#legend').empty();
 					historianGraph.displayHistChart(null,data);
