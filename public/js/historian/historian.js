@@ -45,7 +45,7 @@ var Historian  = function () {
 				//Datetimes only in GMT
 				var fechaini = new Date(Date.parse($(historicStarts).val()));
 				var fechafin = new Date(Date.parse($(historicEnds).val()));
-				dbid = dbid + fechafin.getFullYear() + "-" + (fechafin.getMonth()+1);
+				dbid = dbid + fechafin.getFullYear() + "-" + String("00" + (fechafin.getMonth()+1)).slice(-2);
 				var limite = 100000;
 				var skey = '["'+tokens[3]+'","'+fechafin.toISOString()+'"]';
 				var ekey = '["'+tokens[3]+'","'+fechaini.toISOString()+'"]';
