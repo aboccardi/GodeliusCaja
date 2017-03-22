@@ -134,6 +134,7 @@ var Realtime = function(orgId, api_key, auth_token) {
 
 		connectOptions.onFailure = function(e) {
 			console.log("MQTT connection failed at " + Date.now() + "\nerror: " + e.errorCode + " : " + e.errorMessage);
+			client.connect(connectOptions);
 		}
 
 		console.log("about to connect to " + client.host);
